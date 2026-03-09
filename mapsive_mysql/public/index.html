@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MAPSIVE For Your Health</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+/* ── Reset & Base ─────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1A3C5E;--blue2:#2E6DA4;--blue3:#D6E8FA;
+  --teal:#0D7377;--teal2:#14AFAF;--teal3:#C8F0EE;
+  --accent:#F4A300;--white:#fff;
+  --grey:#F5F7FA;--border:#CBD5E0;
+  --text:#1A202C;--text2:#4A5568;
+  --success:#38A169;--danger:#E53E3E;--warn:#DD6B20;
+}
+body{font-family:'Segoe UI',sans-serif;color:var(--text);background:#f8fafc;}
+a{color:var(--blue2);text-decoration:none;}
+
+/* ── Navbar ───────────────────────────────────────────── */
+nav{background:var(--blue);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.nav-brand{color:#fff;font-size:1.4rem;font-weight:700;padding:1rem 0;display:flex;align-items:center;gap:.5rem;}
+.nav-brand span{color:var(--accent);}
+.nav-links{display:flex;gap:.2rem;flex-wrap:wrap;}
+.nav-links a{color:#dce8f5;padding:.7rem .9rem;border-radius:6px;font-size:.9rem;transition:.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--teal);color:#fff;}
+.hamburger{display:none;color:#fff;font-size:1.5rem;cursor:pointer;padding:.5rem;}
+@media(max-width:768px){
+  .nav-links{display:none;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:var(--blue);padding:1rem;}
+  .nav-links.open{display:flex;}
+  .hamburger{display:block;}
+}
+
+/* ── Sections ─────────────────────────────────────────── */
+.section{display:none;padding:2rem;max-width:1200px;margin:0 auto;}
+.section.active{display:block;}
+
+/* ── Hero ─────────────────────────────────────────────── */
+#home{max-width:100%;padding:0;}
+.hero{background:linear-gradient(135deg,var(--blue) 0%,var(--teal) 100%);color:#fff;text-align:center;padding:5rem 2rem;}
+.hero h1{font-size:3rem;margin-bottom:.5rem;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:1.2rem;opacity:.85;margin-bottom:2rem;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn{padding:.8rem 1.8rem;border:none;border-radius:8px;cursor:pointer;font-size:.95rem;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:.5rem;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#d4900a;}
+.btn-outline{background:transparent;color:#fff;border:2px solid #fff;}
+.btn-outline:hover{background:#fff;color:var(--blue);}
+.btn-blue{background:var(--blue2);color:#fff;}
+.btn-blue:hover{background:var(--blue);}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-teal:hover{background:var(--teal2);}
+.btn-sm{padding:.5rem 1.1rem;font-size:.85rem;}
+.btn-danger{background:var(--danger);color:#fff;}
+
+/* Stats bar */
+.stats-bar{background:var(--blue);color:#fff;display:flex;justify-content:center;gap:3rem;padding:1.5rem;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-item .num{font-size:2rem;font-weight:700;color:var(--accent);}
+.stat-item .lbl{font-size:.85rem;opacity:.8;}
+
+/* ── Section Header ───────────────────────────────────── */
+.section-title{font-size:1.8rem;color:var(--blue);margin-bottom:1.5rem;display:flex;align-items:center;gap:.7rem;}
+.section-title::after{content:'';flex:1;height:3px;background:linear-gradient(90deg,var(--teal),transparent);}
+
+/* ── Cards ────────────────────────────────────────────── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden;transition:.2s;}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(0,0,0,.12);}
+.card-header{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;padding:1.2rem;display:flex;align-items:center;gap:.8rem;}
+.card-header .icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.card-body{padding:1.2rem;}
+.card-body p{color:var(--text2);font-size:.9rem;margin:.3rem 0;display:flex;align-items:center;gap:.5rem;}
+.card-body p i{color:var(--teal);width:16px;}
+.badge{display:inline-block;padding:.25rem .7rem;border-radius:20px;font-size:.78rem;font-weight:600;}
+.badge-teal{background:var(--teal3);color:var(--teal);}
+.badge-blue{background:var(--blue3);color:var(--blue);}
+.badge-green{background:#c6f6d5;color:#276749;}
+.badge-red{background:#fed7d7;color:#c53030;}
+.badge-yellow{background:#fefcbf;color:#744210;}
+.rating{color:var(--accent);}
+
+/* ── Filters ──────────────────────────────────────────── */
+.filter-bar{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end;}
+.filter-bar label{font-size:.85rem;font-weight:600;color:var(--blue);display:block;margin-bottom:.3rem;}
+.filter-bar select,.filter-bar input{padding:.6rem .9rem;border:1px solid var(--border);border-radius:8px;font-size:.9rem;min-width:180px;background:#f9fafb;}
+.filter-bar select:focus,.filter-bar input:focus{outline:none;border-color:var(--teal);}
+
+/* ── Form ─────────────────────────────────────────────── */
+.form-group{margin-bottom:1.2rem;}
+.form-group label{display:block;font-size:.9rem;font-weight:600;color:var(--blue);margin-bottom:.4rem;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.75rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:.9rem;background:#f9fafb;transition:.2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--teal);background:#fff;box-shadow:0 0 0 3px var(--teal3);}
+.form-group textarea{resize:vertical;min-height:100px;}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.form-2col{grid-template-columns:1fr;}}
+
+/* ── Panel / Box ──────────────────────────────────────── */
+.panel{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.panel-title{font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+.panel-title i{color:var(--teal);}
+
+/* ── Table ────────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:var(--blue);color:#fff;padding:.8rem 1rem;text-align:left;}
+td{padding:.75rem 1rem;border-bottom:1px solid var(--border);}
+tr:hover td{background:var(--grey);}
+tr:last-child td{border-bottom:none;}
+
+/* ── Alert / Toast ────────────────────────────────────── */
+.alert{padding:.9rem 1.2rem;border-radius:8px;margin-bottom:1rem;font-size:.9rem;display:flex;align-items:center;gap:.6rem;}
+.alert-success{background:#c6f6d5;color:#276749;border-left:4px solid var(--success);}
+.alert-error{background:#fed7d7;color:#c53030;border-left:4px solid var(--danger);}
+.alert-info{background:var(--blue3);color:var(--blue);border-left:4px solid var(--blue2);}
+#toast{position:fixed;bottom:2rem;right:2rem;padding:1rem 1.5rem;background:var(--blue);color:#fff;border-radius:10px;font-size:.9rem;display:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:slideIn .3s ease;}
+@keyframes slideIn{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+/* ── Doctor Card ──────────────────────────────────────── */
+.doc-card{background:#fff;border-radius:12px;padding:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,.07);display:flex;gap:1rem;align-items:flex-start;transition:.2s;}
+.doc-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.12);}
+.doc-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;flex-shrink:0;overflow:hidden;}
+.doc-avatar img{width:100%;height:100%;object-fit:cover;}
+.doc-info h4{font-size:1rem;color:var(--blue);margin-bottom:.3rem;}
+.doc-info p{font-size:.85rem;color:var(--text2);margin:.2rem 0;}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
+
+/* ── Billing ──────────────────────────────────────────── */
+.upi-box{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;border-radius:12px;padding:1.5rem;text-align:center;margin-top:1rem;}
+.upi-box .upi-id{font-size:1.2rem;font-weight:700;letter-spacing:1px;margin:1rem 0;background:rgba(255,255,255,.15);padding:.5rem 1rem;border-radius:8px;display:inline-block;}
+.upi-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;}
+.upi-btns a{background:rgba(255,255,255,.9);color:var(--blue);padding:.6rem 1.2rem;border-radius:8px;font-weight:600;font-size:.9rem;transition:.2s;}
+.upi-btns a:hover{background:#fff;}
+
+/* ── Admin Dashboard ──────────────────────────────────── */
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-card{background:#fff;border-radius:10px;padding:1.2rem;box-shadow:0 2px 8px rgba(0,0,0,.07);text-align:center;border-top:4px solid var(--teal);}
+.stat-card .s-num{font-size:2rem;font-weight:700;color:var(--blue);}
+.stat-card .s-lbl{font-size:.85rem;color:var(--text2);}
+
+/* ── OTP / Login ──────────────────────────────────────── */
+.login-box{max-width:460px;margin:2rem auto;background:#fff;border-radius:14px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+.login-box h2{text-align:center;color:var(--blue);margin-bottom:1.5rem;}
+.radio-group{display:flex;gap:1rem;margin:.3rem 0;}
+.radio-group label{display:flex;align-items:center;gap:.4rem;cursor:pointer;font-size:.9rem;}
+
+/* ── Prescription ─────────────────────────────────────── */
+.rx-box{border:2px dashed var(--border);border-radius:10px;padding:1.2rem;background:#f9fafb;}
+
+/* ── Footer ───────────────────────────────────────────── */
+footer{background:var(--blue);color:#dce8f5;text-align:center;padding:2rem;margin-top:3rem;}
+footer a{color:var(--accent);}
+.footer-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0;font-size:.9rem;}
+
+/* ── Loading Spinner ──────────────────────────────────── */
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-msg{text-align:center;padding:2rem;color:var(--text2);}
+.loading-msg i{font-size:2rem;color:var(--teal);animation:spin 1s linear infinite;}
+
+/* ── Tabs ─────────────────────────────────────────────── */
+.tabs{display:flex;gap:.3rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.tab-btn{padding:.6rem 1.3rem;border:2px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--text2);transition:.2s;}
+.tab-btn.active,.tab-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-brand"><i class="fas fa-hospital-alt"></i> MAP<span>SIVE</span></div>
+  <div class="hamburger" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
+  <div class="nav-links" id="navLinks">
+    <a href="#" onclick="showSection('home')" class="active">🏠 Home</a>
+    <a href="#" onclick="showSection('hospitals')">🏥 Hospitals</a>
+    <a href="#" onclick="showSection('doctors')">👨‍⚕️ Doctors</a>
+    <a href="#" onclick="showSection('docAccess')">🩺 Doctor Access</a>
+    <a href="#" onclick="showSection('docLogin')">🔐 Doctor Login</a>
+    <a href="#" onclick="showSection('appointments')">📅 Appointments</a>
+    <a href="#" onclick="showSection('billing')">💳 Billing</a>
+    <a href="#" onclick="showSection('contact')">📞 Contact</a>
+    <a href="#" onclick="showSection('admin')">🛡️ Admin</a>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ── HOME ─────────────────────────────────────────────── -->
+<div id="home" class="section active">
+  <div class="hero">
+    <h1>Welcome to <span>MAPSIVE</span></h1>
+    <p>"Your Gateway to Better Health"</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="showSection('hospitals')"><i class="fas fa-hospital"></i> Find Hospitals</button>
+      <button class="btn btn-outline" onclick="showSection('doctors')"><i class="fas fa-user-md"></i> Our Doctors</button>
+      <button class="btn btn-outline" onclick="showSection('appointments')"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+      <button class="btn btn-outline" onclick="showSection('billing')"><i class="fas fa-file-invoice"></i> Pay Bill</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="num" id="homHosp">...</div><div class="lbl">Hospitals</div></div>
+    <div class="stat-item"><div class="num" id="homDoc">...</div><div class="lbl">Doctors</div></div>
+    <div class="stat-item"><div class="num" id="homAppt">...</div><div class="lbl">Appointments</div></div>
+    <div class="stat-item"><div class="num">6</div><div class="lbl">Locations</div></div>
+  </div>
+</div>
+
+<!-- ── HOSPITALS ──────────────────────────────────────────── -->
+<div id="hospitals" class="section">
+  <h2 class="section-title"><i class="fas fa-hospital"></i> Hospitals</h2>
+  <div class="filter-bar">
+    <div>
+      <label>Filter by Location</label>
+      <select id="hLocFilter">
+        <option value="all">All Locations</option>
+        <option>Hyderabad</option><option>Secunderabad</option>
+        <option>Sangareddy</option><option>Medak</option>
+        <option>Jogipet</option><option>Patancheruvu</option>
+      </select>
+    </div>
+    <div>
+      <label>Filter by Speciality</label>
+      <select id="hSpecFilter">
+        <option value="all">All Specialities</option>
+        <option>Cardiology</option><option>Neurology</option><option>Orthopedics</option>
+        <option>Gynecology</option><option>Pediatrics</option><option>Oncology</option>
+        <option>Nephrology</option><option>Gastroenterology</option><option>General Medicine</option>
+        <option>Ophthalmology</option><option>ENT</option><option>Dermatology</option>
+        <option>Urology</option><option>Brain / Neurosurgery</option>
+      </select>
+    </div>
+    <div>
+      <label>Search</label>
+      <input type="text" id="hSearch" placeholder="Hospital name..."/>
+    </div>
+    <div style="display:flex;gap:.5rem;align-self:flex-end">
+      <button class="btn btn-teal" onclick="loadHospitals()"><i class="fas fa-search"></i> Search</button>
+      <button class="btn btn-outline" style="border-color:var(--border);color:var(--text2)" onclick="resetHospitalFilters()">Reset</button>
+    </div>
+  </div>
+  <div id="hospitalList" class="cards-grid"><div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading hospitals...</div></div>
+</div>
+
+<!-- ── DOCTORS ────────────────────────────────────────────── -->
+<div id="doctors" class="section">
+  <h2 class="section-title"><i class="fas fa-user-md"></i> Doctors</h2>
+  <div class="filter-bar">
+    <div>
+      <label>Search by Name / Hospital / Specialization</label>
+      <input type="text" id="dSearch" placeholder="Search doctors..."/>
+    </div>
+    <div>
+      <label>Filter by Location</label>
+      <select id="dLocFilter">
+        <option value="all">All Locations</option>
+        <option>Hyderabad</option><option>Secunderabad</option>
+        <option>Sangareddy</option><option>Medak</option>
+        <option>Jogipet</option><option>Patancheruvu</option>
+      </select>
+    </div>
+    <div style="align-self:flex-end">
+      <button class="btn btn-teal" onclick="loadDoctors()"><i class="fas fa-search"></i> Search</button>
+    </div>
+  </div>
+  <div id="doctorList" class="doc-grid"><div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading doctors...</div></div>
+</div>
+
+<!-- ── DOCTOR LOGIN ────────────────────────────────────────── -->
+<div id="docLogin" class="section">
+  <h2 class="section-title"><i class="fas fa-key"></i> Doctor Portal</h2>
+
+  <!-- LOGGED IN VIEW -->
+  <div id="docLoggedInView" style="display:none;">
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-user-circle"></i> 👋 Welcome, <span id="dlWelcomeName"></span></div>
+      <div class="form-2col">
+        <div><strong>Email:</strong> <span id="dlEmail"></span></div>
+        <div><strong>Phone:</strong> <span id="dlPhone"></span></div>
+        <div><strong>Specialization:</strong> <span id="dlSpec"></span></div>
+        <div><strong>License:</strong> <span id="dlLicense"></span></div>
+        <div><strong>Hospital:</strong> <span id="dlHospital"></span></div>
+      </div>
+      <br/>
+      <button class="btn btn-danger btn-sm" onclick="doctorLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- REGISTER / LOGIN TABS -->
+  <div id="docAuthView">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchAuthTab('register')">🏥 Register</button>
+      <button class="tab-btn" onclick="switchAuthTab('login')">🔐 Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="tabRegister" class="tab-content active">
+      <div class="login-box" style="max-width:600px;">
+        <h2>Doctor Registration</h2>
+        <div class="form-2col">
+          <div class="form-group"><label>Full Name *</label><input id="regName" type="text" placeholder="Dr. Your Name"/></div>
+          <div class="form-group"><label>Email *</label><input id="regEmail" type="email" placeholder="doctor@email.com"/></div>
+          <div class="form-group"><label>Phone</label><input id="regPhone" type="tel" placeholder="+91 98xxxxxxxx"/></div>
+          <div class="form-group"><label>Specialization *</label>
+            <select id="regSpec">
+              <option value="">Select Specialization *</option>
+              <option>Cardiology</option><option>Neurology</option><option>Orthopedics</option>
+              <option>Gynecology</option><option>Pediatrics</option><option>Oncology</option>
+              <option>Nephrology</option><option>Gastroenterology</option><option>General Medicine</option>
+              <option>Ophthalmology</option><option>ENT</option><option>Dermatology</option>
+              <option>Urology</option><option>Brain / Neurosurgery</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Hospital / Clinic</label><input id="regHosp" type="text" placeholder="Hospital name"/></div>
+          <div class="form-group"><label>Location</label>
+            <select id="regLoc">
+              <option value="">Select Location</option>
+              <option>Hyderabad</option><option>Secunderabad</option>
+              <option>Sangareddy</option><option>Medak</option>
+              <option>Jogipet</option><option>Patancheruvu</option>
+            </select>
+          </div>
+          <div class="form-group"><label>License Number</label><input id="regLicense" type="text" placeholder="MCI-XXXXXX"/></div>
+          <div class="form-group"><label>Doctor Photo</label><input id="regPhoto" type="file" accept="image/*"/></div>
+        </div>
+        <button class="btn btn-teal" style="width:100%" onclick="registerDoctor()"><i class="fas fa-user-plus"></i> Register</button>
+        <div id="regResult" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="tabLogin" class="tab-content">
+      <div class="login-box">
+        <h2>Doctor Login</h2>
+        <div id="loginStep1">
+          <div class="form-group"><label>Email *</label><input id="loginEmail" type="email" placeholder="registered@email.com"/></div>
+          <button class="btn btn-teal" style="width:100%" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+        </div>
+        <div id="loginStep2" style="display:none;margin-top:1rem;">
+          <div class="alert alert-info"><i class="fas fa-info-circle"></i> OTP sent! Check server console (demo mode)</div>
+          <div class="form-group"><label>Enter OTP *</label><input id="loginOTP" type="text" placeholder="6-digit OTP" maxlength="6"/></div>
+          <div style="display:flex;gap:.7rem;">
+            <button class="btn btn-teal" style="flex:1" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify & Login</button>
+            <button class="btn btn-sm" style="border:1px solid var(--border)" onclick="document.getElementById('loginStep2').style.display='none';document.getElementById('loginStep1').style.display='block'">← Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DOCTOR ACCESS PANEL ─────────────────────────────────── -->
+<div id="docAccess" class="section">
+  <h2 class="section-title"><i class="fas fa-stethoscope"></i> Doctor Access Panel</h2>
+  <div id="docAccessLoginWarn" class="alert alert-info" style="display:none;">
+    <i class="fas fa-lock"></i> Please <a href="#" onclick="showSection('docLogin')">login as a doctor</a> to access this panel.
+  </div>
+  <div id="docAccessContent" style="display:none;">
+    <!-- Overview -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-chart-bar"></i> Today's Overview</div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="s-num" id="daName">—</div><div class="s-lbl">Doctor</div></div>
+        <div class="stat-card"><div class="s-num" id="daTodayTotal">0</div><div class="s-lbl">Today's Appointments</div></div>
+        <div class="stat-card"><div class="s-num" id="daTodayDone">0</div><div class="s-lbl">Completed</div></div>
+        <div class="stat-card"><div class="s-num" id="daTodayPending">0</div><div class="s-lbl">Pending</div></div>
+      </div>
+    </div>
+
+    <!-- Patient & Prescription -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-file-medical"></i> Patient Details & Prescription</div>
+      <div class="form-group">
+        <label>Select Appointment (optional)</label>
+        <select id="daApptSelect" onchange="fillFromAppt()">
+          <option value="">--- Select from booked appointments ---</option>
+        </select>
+      </div>
+      <div class="form-2col">
+        <div class="form-group">
+          <label>Patient ID</label>
+          <div style="display:flex;gap:.5rem;">
+            <input id="daPatientId" type="text" placeholder="Auto-generate or enter" readonly style="flex:1"/>
+            <button class="btn btn-sm btn-blue" onclick="document.getElementById('daPatientId').value='PAT'+Date.now().toString().slice(-6)">Generate</button>
+          </div>
+        </div>
+        <div class="form-group"><label>Patient Name</label><input id="daPatientName" type="text" placeholder="Full name"/></div>
+        <div class="form-group"><label>Hospital / Clinic</label><input id="daHospital" type="text" placeholder="Hospital"/></div>
+        <div class="form-group"><label>Appointment Date & Time</label><input id="daDateTime" type="datetime-local"/></div>
+        <div class="form-group">
+          <label>Visit Type</label>
+          <div class="radio-group">
+            <label><input type="radio" name="visitType" value="Offline" checked/> Offline</label>
+            <label><input type="radio" name="visitType" value="Online"/> Online</label>
+            <label><input type="radio" name="visitType" value="Referred"/> Referred</label>
+          </div>
+        </div>
+        <div class="form-group"><label>Referred Doctor (if any)</label><input id="daReferred" type="text" placeholder="Doctor name"/></div>
+      </div>
+      <div class="form-group"><label>Integration / Case Notes</label><textarea id="daNotes" placeholder="Case notes, history..."></textarea></div>
+      <div class="form-group">
+        <label>Prescription</label>
+        <div class="rx-box">
+          <textarea id="daPrescription" placeholder="Rx: Medicine name — dose — frequency — duration&#10;E.g: Tab Paracetamol 500mg — 1 tab — TDS — 5 days" style="border:none;background:transparent;min-height:120px;width:100%;font-size:.9rem;resize:vertical;outline:none;"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-teal" onclick="savePrescription()"><i class="fas fa-save"></i> Save Prescription</button>
+    </div>
+
+    <!-- Schedule Appointment -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-calendar-plus"></i> Schedule New Appointment</div>
+      <div class="form-2col">
+        <div class="form-group"><label>Patient Name *</label><input id="schPatient" type="text"/></div>
+        <div class="form-group"><label>Phone</label><input id="schPhone" type="tel"/></div>
+        <div class="form-group"><label>Hospital</label><input id="schHosp" type="text"/></div>
+        <div class="form-group"><label>Date *</label><input id="schDate" type="date"/></div>
+        <div class="form-group"><label>Time *</label><input id="schTime" type="time"/></div>
+        <div class="form-group"><label>Visit Type</label>
+          <select id="schVisit"><option>Offline</option><option>Online</option><option>Referred</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="schNotes" rows="3"></textarea></div>
+      <button class="btn btn-blue" onclick="scheduleAppointment()"><i class="fas fa-calendar-check"></i> Schedule Appointment</button>
+    </div>
+
+    <!-- Saved Prescriptions -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-notes-medical"></i> Saved Prescriptions</div>
+      <div id="prescriptionList"><div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading...</div></div>
+    </div>
+
+    <!-- Today's Appointments Table -->
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-list"></i> Today's Appointments</div>
+      <div id="todayApptTable" class="tbl-wrap"><div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── APPOINTMENTS ────────────────────────────────────────── -->
+<div id="appointments" class="section">
+  <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Appointments</h2>
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-calendar-plus"></i> Book New Appointment</div>
+    <div class="form-2col">
+      <div class="form-group"><label>Patient Name *</label><input id="apptName" type="text" placeholder="Full name"/></div>
+      <div class="form-group"><label>Phone *</label><input id="apptPhone" type="tel" placeholder="+91 98xxxxxxxx"/></div>
+      <div class="form-group"><label>Hospital</label>
+        <select id="apptHosp"><option value="">Select Hospital</option></select>
+      </div>
+      <div class="form-group"><label>Doctor</label>
+        <select id="apptDoctor"><option value="">Select Doctor</option></select>
+      </div>
+      <div class="form-group"><label>Date *</label><input id="apptDate" type="date"/></div>
+      <div class="form-group"><label>Time *</label><input id="apptTime" type="time"/></div>
+    </div>
+    <div class="form-group"><label>Visit Type</label>
+      <select id="apptVisit"><option>Offline</option><option>Online</option><option>Referred</option></select>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="apptNotes" rows="3" placeholder="Any special notes..."></textarea></div>
+    <button class="btn btn-teal" onclick="bookAppointment()"><i class="fas fa-calendar-check"></i> Book Appointment</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-list-alt"></i> My Appointments</div>
+    <div class="form-group" style="max-width:300px">
+      <input type="tel" id="apptSearchPhone" placeholder="Search by phone..." />
+      <button class="btn btn-sm btn-blue" style="margin-top:.4rem" onclick="loadMyAppointments()">🔍 Search</button>
+    </div>
+    <div id="myAppointmentsList" class="tbl-wrap"></div>
+  </div>
+</div>
+
+<!-- ── BILLING ─────────────────────────────────────────────── -->
+<div id="billing" class="section">
+  <h2 class="section-title"><i class="fas fa-file-invoice-dollar"></i> Bill Payment</h2>
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-user"></i> Patient & Bill Details</div>
+    <div class="form-2col">
+      <div class="form-group"><label>Patient Name *</label><input id="billName" type="text" placeholder="Full name"/></div>
+      <div class="form-group"><label>Phone</label><input id="billPhone" type="tel" placeholder="+91 98xxxxxxxx"/></div>
+      <div class="form-group"><label>Hospital</label><input id="billHospital" type="text" placeholder="Hospital name"/></div>
+      <div class="form-group"><label>Doctor</label><input id="billDoctor" type="text" placeholder="Doctor name"/></div>
+      <div class="form-group"><label>Consultation Fee (₹)</label><input id="billConsult" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label>Medicine Charges (₹)</label><input id="billMed" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label>Lab / Tests (₹)</label><input id="billLab" type="number" placeholder="0" min="0"/></div>
+      <div class="form-group"><label>Other Charges (₹)</label><input id="billOther" type="number" placeholder="0" min="0"/></div>
+    </div>
+    <div class="alert alert-info"><i class="fas fa-rupee-sign"></i> <strong>Total Amount: ₹<span id="billTotal">0</span></strong></div>
+    <button class="btn btn-teal" onclick="saveBill()"><i class="fas fa-save"></i> Save Bill</button>
+  </div>
+
+  <div id="billPayBox" class="panel" style="display:none;">
+    <div class="upi-box">
+      <h3><i class="fas fa-qrcode"></i> Scan to Pay</h3>
+      <div class="upi-id">7036547953-2@ybl</div>
+      <p style="font-size:.85rem;opacity:.8">UPI ID: 7036547953-2@ybl</p>
+      <div class="upi-btns">
+        <a id="gpayLink" href="#"><i class="fab fa-google-pay"></i> Google Pay</a>
+        <a id="phonepeLink" href="#"><i class="fas fa-mobile-alt"></i> PhonePe</a>
+        <a id="upiLink" href="#"><i class="fas fa-university"></i> UPI</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title"><i class="fas fa-history"></i> Saved Bills</div>
+    <div class="form-group" style="max-width:300px">
+      <input type="text" id="billSearchName" placeholder="Search by patient name..." />
+      <button class="btn btn-sm btn-blue" style="margin-top:.4rem" onclick="loadBills()">🔍 Search</button>
+    </div>
+    <div id="billsList" class="tbl-wrap"></div>
+  </div>
+</div>
+
+<!-- ── CONTACT ─────────────────────────────────────────────── -->
+<div id="contact" class="section">
+  <h2 class="section-title"><i class="fas fa-phone"></i> Contact Us</h2>
+  <div class="panel" style="max-width:600px">
+    <p style="font-size:1.1rem;margin:.8rem 0;"><i class="fas fa-envelope" style="color:var(--teal);margin-right:.6rem;"></i> <a href="mailto:hospitalmanagement@gmail.com">hospitalmanagement@gmail.com</a></p>
+    <p style="font-size:1.1rem;margin:.8rem 0;"><i class="fas fa-phone" style="color:var(--teal);margin-right:.6rem;"></i> <a href="tel:+916303415634">+91 6303415634</a></p>
+    <p style="font-size:1.1rem;margin:.8rem 0;"><i class="fas fa-map-marker-alt" style="color:var(--teal);margin-right:.6rem;"></i> Sangareddy, Telangana, India</p>
+    <br/>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30455.15!2d77.98!3d17.62!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcbf2b0a7adeb01%3A0x83c8d012b61f2a1c!2sSangareddy%2C%20Telangana!5e0!3m2!1sen!2sin!4v1600000000000" width="100%" height="300" style="border-radius:10px;border:0;" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
+<!-- ── ADMIN ───────────────────────────────────────────────── -->
+<div id="admin" class="section">
+  <h2 class="section-title"><i class="fas fa-shield-alt"></i> Admin Panel</h2>
+
+  <!-- LOGIN -->
+  <div id="adminLoginView">
+    <div class="login-box">
+      <h2>🛡️ Admin Login</h2>
+      <div class="form-group"><label>Username</label><input id="adminUser" type="text" placeholder="admin"/></div>
+      <div class="form-group"><label>Password</label><input id="adminPass" type="password" placeholder="••••••"/></div>
+      <button class="btn btn-blue" style="width:100%" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <div id="adminLoginErr" style="margin-top:.8rem;"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="adminDashboard" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <h3 style="color:var(--blue);">Admin Dashboard</h3>
+      <button class="btn btn-danger btn-sm" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-cards" id="adminStats"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchAdminTab('adDoctors')">👨‍⚕️ Doctors</button>
+      <button class="tab-btn" onclick="switchAdminTab('adPatients')">🧑 Patients</button>
+      <button class="tab-btn" onclick="switchAdminTab('adAppointments')">📅 Appointments</button>
+      <button class="tab-btn" onclick="switchAdminTab('adBills')">💳 Bills</button>
+      <button class="tab-btn" onclick="switchAdminTab('adHospitals')">🏥 Hospitals</button>
+      <button class="tab-btn" onclick="switchAdminTab('adAddDoctor')">➕ Add Doctor</button>
+      <button class="tab-btn" onclick="switchAdminTab('adAddHospital')">➕ Add Hospital</button>
+    </div>
+
+    <div id="adDoctors" class="tab-content active panel">
+      <div class="panel-title"><i class="fas fa-user-md"></i> Registered Doctors</div>
+      <div id="adminDoctorsList" class="tbl-wrap"><div class="loading-msg"><i class="fas fa-spinner"></i></div></div>
+    </div>
+
+    <div id="adPatients" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-users"></i> Patient List</div>
+      <div id="adminPatientsList" class="tbl-wrap"></div>
+    </div>
+
+    <div id="adAppointments" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-calendar-check"></i> All Appointments</div>
+      <div id="adminApptList" class="tbl-wrap"></div>
+    </div>
+
+    <div id="adBills" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-receipt"></i> Payments / Bills</div>
+      <div id="adminBillsList" class="tbl-wrap"></div>
+    </div>
+
+    <div id="adHospitals" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-hospital"></i> Registered Hospitals</div>
+      <div id="adminHospitalsList" class="tbl-wrap"></div>
+    </div>
+
+    <div id="adAddDoctor" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-user-plus"></i> Add / Manage Doctor</div>
+      <div class="form-2col">
+        <div class="form-group"><label>Full Name *</label><input id="adDName" type="text"/></div>
+        <div class="form-group"><label>Email *</label><input id="adDEmail" type="email"/></div>
+        <div class="form-group"><label>Phone</label><input id="adDPhone" type="tel"/></div>
+        <div class="form-group"><label>Specialization *</label>
+          <select id="adDSpec">
+            <option value="">Select</option>
+            <option>Cardiology</option><option>Neurology</option><option>Orthopedics</option>
+            <option>Gynecology</option><option>Pediatrics</option><option>Oncology</option>
+            <option>Nephrology</option><option>Gastroenterology</option><option>General Medicine</option>
+            <option>Ophthalmology</option><option>ENT</option><option>Dermatology</option>
+            <option>Urology</option><option>Brain / Neurosurgery</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Hospital</label><input id="adDHosp" type="text"/></div>
+        <div class="form-group"><label>Location</label>
+          <select id="adDLoc">
+            <option value="">Select</option>
+            <option>Hyderabad</option><option>Secunderabad</option>
+            <option>Sangareddy</option><option>Medak</option>
+            <option>Jogipet</option><option>Patancheruvu</option>
+          </select>
+        </div>
+        <div class="form-group"><label>License No</label><input id="adDLicense" type="text"/></div>
+        <div class="form-group"><label>Doctor Photo</label><input id="adDPhoto" type="file" accept="image/*"/></div>
+        <div class="form-group"><label>License Document</label><input id="adDLicDoc" type="file" accept="image/*,application/pdf"/></div>
+      </div>
+      <button class="btn btn-teal" onclick="adminAddDoctor()"><i class="fas fa-save"></i> Create / Update Doctor</button>
+      <p style="font-size:.85rem;color:var(--text2);margin-top:.5rem;">Doctor ID and Login Code auto-generated.</p>
+      <div id="adDoctorResult" style="margin-top:1rem;"></div>
+    </div>
+
+    <div id="adAddHospital" class="tab-content panel">
+      <div class="panel-title"><i class="fas fa-hospital-symbol"></i> Add Hospital</div>
+      <div class="form-2col">
+        <div class="form-group"><label>Hospital Name *</label><input id="adHName" type="text"/></div>
+        <div class="form-group"><label>Location *</label>
+          <select id="adHLoc">
+            <option value="">Select</option>
+            <option>Hyderabad</option><option>Secunderabad</option>
+            <option>Sangareddy</option><option>Medak</option>
+            <option>Jogipet</option><option>Patancheruvu</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Speciality *</label>
+          <select id="adHSpec">
+            <option value="">Select</option>
+            <option>Cardiology</option><option>Neurology</option><option>Orthopedics</option>
+            <option>Gynecology</option><option>Pediatrics</option><option>Oncology</option>
+            <option>Nephrology</option><option>Gastroenterology</option><option>General Medicine</option>
+            <option>Ophthalmology</option><option>ENT</option><option>Dermatology</option>
+            <option>Urology</option><option>Brain / Neurosurgery</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Address</label><input id="adHAddr" type="text"/></div>
+        <div class="form-group"><label>Phone</label><input id="adHPhone" type="tel"/></div>
+        <div class="form-group"><label>Email</label><input id="adHEmail" type="email"/></div>
+        <div class="form-group"><label>Hospital Photo</label><input id="adHPhoto" type="file" accept="image/*"/></div>
+        <div class="form-group"><label>Hospital License</label><input id="adHLicense" type="file" accept="image/*,application/pdf"/></div>
+      </div>
+      <button class="btn btn-teal" onclick="adminAddHospital()"><i class="fas fa-plus-circle"></i> Register Hospital</button>
+      <div id="adHospResult" style="margin-top:1rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p style="font-size:1.1rem;font-weight:700;color:#fff;">🏥 MAPSIVE For Your Health</p>
+  <div class="footer-links">
+    <a href="#" onclick="showSection('home')">Home</a>
+    <a href="#" onclick="showSection('hospitals')">Hospitals</a>
+    <a href="#" onclick="showSection('billing')">Billing</a>
+    <a href="#" onclick="showSection('contact')">Contact</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms</a>
+    <a href="#">FAQ</a>
+  </div>
+  <p style="font-size:.85rem;opacity:.7;">+91 6303415634 | hospitalmanagement@gmail.com</p>
+  <p style="font-size:.8rem;margin-top:.8rem;opacity:.6;">© 2025 MAPSIVE For Your Health. All Rights Reserved. | Version 2.0 (MySQL Edition)</p>
+  <p style="font-size:.75rem;margin-top:.3rem;opacity:.5;">Powered by Node.js + Express + MySQL | MNRCET CSE Project</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  MAPSIVE Frontend — MySQL API Edition
+//  All data is fetched from the Express + MySQL backend
+// ═══════════════════════════════════════════════════════════
+
+const API = '';  // Same origin (server serves this file)
+let currentDoctor = null;
+let currentOtpEmail = '';
+
+// ── Utility ────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#E53E3E' : type === 'info' ? '#2E6DA4' : '#0D7377';
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+async function api(method, path, body=null, isFormData=false) {
+  const opts = { method, credentials: 'include' };
+  if (body) {
+    if (isFormData) { opts.body = body; }
+    else { opts.headers = {'Content-Type':'application/json'}; opts.body = JSON.stringify(body); }
+  }
+  const r = await fetch(API + path, opts);
+  return r.json();
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(id)) a.classList.add('active');
+  });
+  // Lazy-load sections
+  if (id === 'hospitals')    loadHospitals();
+  if (id === 'doctors')      loadDoctors();
+  if (id === 'docAccess')    initDocAccess();
+  if (id === 'appointments') initAppointments();
+  if (id === 'billing')      initBillingCalc();
+  if (id === 'home')         loadHomeStats();
+  window.scrollTo(0,0);
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('#docLogin .tab-btn').forEach((b,i) => {
+    const tabs = ['register','login'];
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+}
+
+function switchAdminTab(id) {
+  document.querySelectorAll('#adminDashboard .tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#adminDashboard .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  // lazy load
+  if (id === 'adDoctors')      loadAdminDoctors();
+  if (id === 'adPatients')     loadAdminPatients();
+  if (id === 'adAppointments') loadAdminAppointments();
+  if (id === 'adBills')        loadAdminBills();
+  if (id === 'adHospitals')    loadAdminHospitals();
+}
+
+function stars(r) {
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += i <= Math.round(r) ? '★' : '☆';
+  return s;
+}
+
+// ── Home Stats ─────────────────────────────────────────────
+async function loadHomeStats() {
+  try {
+    const [h, d] = await Promise.all([
+      api('GET', '/api/hospitals'),
+      api('GET', '/api/doctors')
+    ]);
+    document.getElementById('homHosp').textContent  = h.data?.length  || '35+';
+    document.getElementById('homDoc').textContent   = d.data?.length  || '55+';
+    const ap = await api('GET', '/api/appointments');
+    document.getElementById('homAppt').textContent  = ap.data?.length || '0';
+  } catch(e) { console.warn('Stats load:', e); }
+}
+
+// ── HOSPITALS ──────────────────────────────────────────────
+async function loadHospitals() {
+  const loc   = document.getElementById('hLocFilter').value;
+  const spec  = document.getElementById('hSpecFilter').value;
+  const srch  = document.getElementById('hSearch').value;
+  const list  = document.getElementById('hospitalList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading...</div>';
+
+  const params = new URLSearchParams();
+  if (loc  !== 'all') params.append('location', loc);
+  if (spec !== 'all') params.append('speciality', spec);
+  if (srch)           params.append('search', srch);
+
+  try {
+    const res = await api('GET', '/api/hospitals?' + params.toString());
+    if (!res.success) { list.innerHTML = '<div class="alert alert-error">Failed to load hospitals</div>'; return; }
+    if (!res.data.length) { list.innerHTML = '<div class="alert alert-info">No hospitals found for selected filters.</div>'; return; }
+
+    list.innerHTML = res.data.map(h => `
+      <div class="card">
+        <div class="card-header">
+          <div class="icon"><i class="fas fa-hospital"></i></div>
+          <div>
+            <h3 style="font-size:1rem;">${h.name}</h3>
+            <div class="rating">${stars(h.rating || 4)} ${h.rating || 4.0}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <p><i class="fas fa-map-marker-alt"></i>${h.location}</p>
+          <p><i class="fas fa-heartbeat"></i><span class="badge badge-teal">${h.speciality}</span></p>
+          ${h.address ? `<p><i class="fas fa-road"></i>${h.address}</p>` : ''}
+          ${h.phone   ? `<p><i class="fas fa-phone"></i>${h.phone}</p>` : ''}
+          <br/>
+          <button class="btn btn-sm btn-teal" onclick="prefillAppt('${h.name}')">
+            <i class="fas fa-calendar-plus"></i> Book Appointment
+          </button>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Cannot connect to server. Is the backend running?</div>';
+  }
+}
+
+function resetHospitalFilters() {
+  document.getElementById('hLocFilter').value  = 'all';
+  document.getElementById('hSpecFilter').value = 'all';
+  document.getElementById('hSearch').value     = '';
+  loadHospitals();
+}
+
+// ── DOCTORS ────────────────────────────────────────────────
+async function loadDoctors() {
+  const srch = document.getElementById('dSearch').value;
+  const loc  = document.getElementById('dLocFilter').value;
+  const list = document.getElementById('doctorList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i><br/>Loading...</div>';
+
+  const params = new URLSearchParams();
+  if (loc  !== 'all') params.append('location', loc);
+  if (srch)           params.append('search', srch);
+
+  try {
+    const res = await api('GET', '/api/doctors?' + params.toString());
+    if (!res.success || !res.data.length) {
+      list.innerHTML = '<div class="alert alert-info">No doctors found.</div>'; return;
+    }
+    list.innerHTML = res.data.map(d => `
+      <div class="doc-card">
+        <div class="doc-avatar">
+          ${d.photo_url ? `<img src="${d.photo_url}" alt="${d.name}"/>` : '<i class="fas fa-user-md"></i>'}
+        </div>
+        <div class="doc-info">
+          <h4>${d.name}</h4>
+          <p><i class="fas fa-heartbeat" style="color:var(--teal)"></i> <span class="badge badge-teal">${d.specialization}</span></p>
+          <p><i class="fas fa-hospital" style="color:var(--blue2)"></i> ${d.hospital || '—'}</p>
+          <p><i class="fas fa-map-marker-alt" style="color:var(--text2)"></i> ${d.location || '—'}</p>
+          ${d.phone ? `<p><i class="fas fa-phone" style="color:var(--text2)"></i> ${d.phone}</p>` : ''}
+          <p style="margin-top:.5rem">
+            <span class="badge ${d.status==='active'?'badge-green':'badge-red'}">${d.status}</span>
+            <span style="font-size:.78rem;color:var(--text2);margin-left:.5rem">ID: ${d.doctor_id}</span>
+          </p>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="alert alert-error">Cannot connect to server.</div>';
+  }
+}
+
+// ── DOCTOR REGISTER ────────────────────────────────────────
+async function registerDoctor() {
+  const name = document.getElementById('regName').value.trim();
+  const email= document.getElementById('regEmail').value.trim();
+  const spec = document.getElementById('regSpec').value;
+  if (!name || !email || !spec) { toast('Name, Email, Specialization required','error'); return; }
+
+  const fd = new FormData();
+  fd.append('name',           name);
+  fd.append('email',          email);
+  fd.append('phone',          document.getElementById('regPhone').value);
+  fd.append('specialization', spec);
+  fd.append('hospital',       document.getElementById('regHosp').value);
+  fd.append('location',       document.getElementById('regLoc').value);
+  fd.append('license',        document.getElementById('regLicense').value);
+  const photoFile = document.getElementById('regPhoto').files[0];
+  if (photoFile) fd.append('photo', photoFile);
+
+  try {
+    const res = await api('POST', '/api/doctors/register', fd, true);
+    const box = document.getElementById('regResult');
+    if (res.success) {
+      box.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i>
+        Registered! Doctor ID: <strong>${res.doctor_id}</strong> | Login Code: <strong>${res.login_code}</strong><br/>
+        <small>Save these details!</small></div>`;
+      toast('Doctor registered successfully!');
+    } else {
+      box.innerHTML = `<div class="alert alert-error">${res.message}</div>`;
+    }
+  } catch(e) {
+    document.getElementById('regResult').innerHTML = '<div class="alert alert-error">Server error</div>';
+  }
+}
+
+// ── OTP LOGIN ──────────────────────────────────────────────
+async function sendOTP() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { toast('Enter email','error'); return; }
+  try {
+    const res = await api('POST', '/api/doctors/send-otp', { email });
+    if (res.success) {
+      currentOtpEmail = email;
+      document.getElementById('loginStep1').style.display = 'none';
+      document.getElementById('loginStep2').style.display = 'block';
+      if (res.otp_demo) console.log('🔐 OTP (demo):', res.otp_demo);
+      toast('OTP sent! Check console (demo mode)','info');
+    } else {
+      toast(res.message, 'error');
+    }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function verifyOTP() {
+  const otp = document.getElementById('loginOTP').value.trim();
+  if (!otp) { toast('Enter OTP','error'); return; }
+  try {
+    const res = await api('POST', '/api/doctors/verify-otp', { email: currentOtpEmail, otp });
+    if (res.success) {
+      currentDoctor = res.doctor;
+      updateDoctorUI();
+      toast(`Welcome, ${res.doctor.name}!`);
+    } else {
+      toast(res.message, 'error');
+    }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function doctorLogout() {
+  await api('POST', '/api/doctors/logout');
+  currentDoctor = null;
+  document.getElementById('docLoggedInView').style.display = 'none';
+  document.getElementById('docAuthView').style.display     = 'block';
+  document.getElementById('loginStep1').style.display      = 'block';
+  document.getElementById('loginStep2').style.display      = 'none';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginOTP').value   = '';
+  toast('Logged out');
+}
+
+function updateDoctorUI() {
+  if (!currentDoctor) return;
+  document.getElementById('docLoggedInView').style.display = 'block';
+  document.getElementById('docAuthView').style.display     = 'none';
+  document.getElementById('dlWelcomeName').textContent = currentDoctor.name;
+  document.getElementById('dlEmail').textContent       = currentDoctor.email;
+  document.getElementById('dlPhone').textContent       = currentDoctor.phone || '—';
+  document.getElementById('dlSpec').textContent        = currentDoctor.specialization;
+  document.getElementById('dlLicense').textContent     = currentDoctor.license || '—';
+  document.getElementById('dlHospital').textContent    = currentDoctor.hospital || '—';
+}
+
+// ── DOCTOR ACCESS ──────────────────────────────────────────
+async function initDocAccess() {
+  if (!currentDoctor) {
+    // Try to restore session
+    try {
+      const res = await api('GET', '/api/doctors/me');
+      if (res.success) { currentDoctor = res.doctor; updateDoctorUI(); }
+    } catch(e) {}
+  }
+
+  if (!currentDoctor) {
+    document.getElementById('docAccessLoginWarn').style.display = 'block';
+    document.getElementById('docAccessContent').style.display   = 'none';
+    return;
+  }
+  document.getElementById('docAccessLoginWarn').style.display = 'none';
+  document.getElementById('docAccessContent').style.display   = 'block';
+  document.getElementById('daName').textContent = currentDoctor.name;
+  document.getElementById('daHospital').value   = currentDoctor.hospital || '';
+
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const res = await api('GET', `/api/appointments?doctor_id=${currentDoctor.doctor_id}&date=${today}`);
+    const appts = res.data || [];
+    const done    = appts.filter(a => a.status === 'completed').length;
+    const pending = appts.filter(a => a.status === 'pending').length;
+    document.getElementById('daTodayTotal').textContent   = appts.length;
+    document.getElementById('daTodayDone').textContent    = done;
+    document.getElementById('daTodayPending').textContent = pending;
+
+    // Fill select
+    const sel = document.getElementById('daApptSelect');
+    sel.innerHTML = '<option value="">--- Select from booked appointments ---</option>';
+    appts.forEach(a => {
+      const o = document.createElement('option');
+      o.value       = a.id;
+      o.textContent = `${a.patient_name} — ${a.appointment_time} (${a.status})`;
+      o.dataset.name    = a.patient_name;
+      o.dataset.phone   = a.patient_phone;
+      o.dataset.hosp    = a.hospital;
+      o.dataset.dt      = a.appointment_date + 'T' + a.appointment_time;
+      o.dataset.visit   = a.visit_type;
+      sel.appendChild(o);
+    });
+
+    // Today table
+    const tbl = document.getElementById('todayApptTable');
+    if (!appts.length) { tbl.innerHTML = '<p style="color:var(--text2)">No appointments today.</p>'; }
+    else {
+      tbl.innerHTML = `<table><tr><th>Patient</th><th>Phone</th><th>Time</th><th>Visit</th><th>Status</th><th>Action</th></tr>
+        ${appts.map(a => `<tr>
+          <td>${a.patient_name}</td><td>${a.patient_phone||'—'}</td>
+          <td>${a.appointment_time}</td><td>${a.visit_type}</td>
+          <td><span class="badge ${a.status==='completed'?'badge-green':a.status==='cancelled'?'badge-red':'badge-yellow'}">${a.status}</span></td>
+          <td>${a.status==='pending'?`<button class="btn btn-sm btn-teal" onclick="markComplete(${a.id})">✓ Done</button>`:'—'}</td>
+        </tr>`).join('')}</table>`;
+    }
+  } catch(e) { console.warn(e); }
+
+  loadPrescriptions();
+}
+
+function fillFromAppt() {
+  const sel = document.getElementById('daApptSelect');
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt.dataset.name) return;
+  document.getElementById('daPatientName').value = opt.dataset.name;
+  document.getElementById('daHospital').value    = opt.dataset.hosp;
+  document.getElementById('daDateTime').value    = opt.dataset.dt?.slice(0,16) || '';
+  document.querySelectorAll('input[name="visitType"]').forEach(r => r.checked = r.value === opt.dataset.visit);
+}
+
+async function markComplete(id) {
+  await api('PUT', `/api/appointments/${id}/status`, { status: 'completed' });
+  toast('Marked as completed');
+  initDocAccess();
+}
+
+async function savePrescription() {
+  if (!currentDoctor) { toast('Login as doctor first','error'); return; }
+  const txt = document.getElementById('daPrescription').value.trim();
+  if (!txt) { toast('Write prescription first','error'); return; }
+  const apptSel = document.getElementById('daApptSelect');
+  const apptId  = apptSel.value || null;
+
+  const visit = document.querySelector('input[name="visitType"]:checked')?.value || 'Offline';
+  try {
+    const res = await api('POST', '/api/prescriptions', {
+      patient_name:    document.getElementById('daPatientName').value,
+      patient_id:      document.getElementById('daPatientId').value,
+      hospital:        document.getElementById('daHospital').value,
+      appointment_id:  apptId ? parseInt(apptId) : null,
+      prescription_txt: txt,
+      notes:           document.getElementById('daNotes').value,
+      referred_doctor: document.getElementById('daReferred').value,
+      visit_type:      visit
+    });
+    if (res.success) { toast('Prescription saved!'); loadPrescriptions(); }
+    else             { toast(res.message, 'error'); }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function loadPrescriptions() {
+  if (!currentDoctor) return;
+  const list = document.getElementById('prescriptionList');
+  try {
+    const res = await api('GET', `/api/prescriptions?doctor_id=${currentDoctor.doctor_id}`);
+    if (!res.data?.length) { list.innerHTML = '<p style="color:var(--text2)">No prescriptions saved yet.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Patient</th><th>Hospital</th><th>Visit</th><th>Prescription</th><th>Date</th></tr>
+      ${res.data.map(p => `<tr>
+        <td>${p.patient_name||'—'}</td><td>${p.hospital||'—'}</td><td>${p.visit_type||'—'}</td>
+        <td style="max-width:250px;white-space:pre-wrap;font-size:.8rem">${p.prescription_txt||'—'}</td>
+        <td>${new Date(p.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`).join('')}</table>`;
+  } catch(e) {}
+}
+
+async function scheduleAppointment() {
+  if (!currentDoctor) { toast('Login as doctor first','error'); return; }
+  const patient = document.getElementById('schPatient').value.trim();
+  const date    = document.getElementById('schDate').value;
+  const time    = document.getElementById('schTime').value;
+  if (!patient || !date || !time) { toast('Patient name, date, time required','error'); return; }
+  try {
+    const res = await api('POST', '/api/appointments/schedule', {
+      patient_name: patient, patient_phone: document.getElementById('schPhone').value,
+      hospital: document.getElementById('schHosp').value,
+      appointment_date: date, appointment_time: time,
+      visit_type: document.getElementById('schVisit').value,
+      notes: document.getElementById('schNotes').value
+    });
+    if (res.success) { toast('Appointment scheduled!'); initDocAccess(); }
+    else             { toast(res.message, 'error'); }
+  } catch(e) { toast('Server error','error'); }
+}
+
+// ── APPOINTMENTS ───────────────────────────────────────────
+async function initAppointments() {
+  // Populate hospital dropdown
+  try {
+    const h = await api('GET', '/api/hospitals');
+    const hSel = document.getElementById('apptHosp');
+    hSel.innerHTML = '<option value="">Select Hospital</option>';
+    (h.data||[]).forEach(x => { const o = document.createElement('option'); o.value = o.textContent = x.name; hSel.appendChild(o); });
+
+    const d = await api('GET', '/api/doctors');
+    const dSel = document.getElementById('apptDoctor');
+    dSel.innerHTML = '<option value="">Select Doctor</option>';
+    (d.data||[]).forEach(x => { const o = document.createElement('option'); o.value = x.doctor_id; o.textContent = x.name + ' — ' + x.specialization; dSel.appendChild(o); });
+  } catch(e) {}
+}
+
+async function bookAppointment() {
+  const name = document.getElementById('apptName').value.trim();
+  const date = document.getElementById('apptDate').value;
+  const time = document.getElementById('apptTime').value;
+  if (!name || !date || !time) { toast('Name, date, time required','error'); return; }
+
+  const doctorSel  = document.getElementById('apptDoctor');
+  const doctorName = doctorSel.options[doctorSel.selectedIndex]?.text.split(' — ')[0] || '';
+
+  try {
+    const res = await api('POST', '/api/appointments', {
+      patient_name: name, patient_phone: document.getElementById('apptPhone').value,
+      hospital: document.getElementById('apptHosp').value,
+      doctor_name: doctorName, doctor_id: doctorSel.value,
+      appointment_date: date, appointment_time: time,
+      visit_type: document.getElementById('apptVisit').value,
+      notes: document.getElementById('apptNotes').value
+    });
+    if (res.success) { toast('Appointment booked! ID: ' + res.id); loadMyAppointments(); }
+    else             { toast(res.message, 'error'); }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function loadMyAppointments() {
+  const phone = document.getElementById('apptSearchPhone').value.trim();
+  const list  = document.getElementById('myAppointmentsList');
+  if (!phone) { list.innerHTML = '<p style="color:var(--text2)">Enter phone number to search appointments.</p>'; return; }
+  try {
+    const params = new URLSearchParams({ patient_phone: phone });
+    // Use admin endpoint or filter client-side
+    const res = await api('GET', '/api/appointments');
+    const data = (res.data||[]).filter(a => a.patient_phone === phone);
+    if (!data.length) { list.innerHTML = '<p style="color:var(--text2)">No appointments found for this number.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Hospital</th><th>Doctor</th><th>Date</th><th>Time</th><th>Visit</th><th>Status</th></tr>
+      ${data.map(a => `<tr>
+        <td>${a.hospital||'—'}</td><td>${a.doctor_name||'—'}</td>
+        <td>${new Date(a.appointment_date).toLocaleDateString('en-IN')}</td>
+        <td>${a.appointment_time}</td><td>${a.visit_type}</td>
+        <td><span class="badge ${a.status==='completed'?'badge-green':a.status==='cancelled'?'badge-red':'badge-yellow'}">${a.status}</span></td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Server error</div>'; }
+}
+
+// ── BILLING ────────────────────────────────────────────────
+function initBillingCalc() {
+  ['billConsult','billMed','billLab','billOther'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcTotal);
+  });
+}
+
+function calcTotal() {
+  const t = ['billConsult','billMed','billLab','billOther'].reduce((s,id) => s + (parseFloat(document.getElementById(id).value)||0), 0);
+  document.getElementById('billTotal').textContent = t.toFixed(2);
+  return t;
+}
+
+async function saveBill() {
+  const name = document.getElementById('billName').value.trim();
+  const amt  = calcTotal();
+  if (!name) { toast('Patient name required','error'); return; }
+
+  const items = {
+    consultation: parseFloat(document.getElementById('billConsult').value)||0,
+    medicine:     parseFloat(document.getElementById('billMed').value)||0,
+    lab:          parseFloat(document.getElementById('billLab').value)||0,
+    other:        parseFloat(document.getElementById('billOther').value)||0
+  };
+
+  try {
+    const res = await api('POST', '/api/bills', {
+      patient_name: name, patient_phone: document.getElementById('billPhone').value,
+      hospital: document.getElementById('billHospital').value,
+      doctor_name: document.getElementById('billDoctor').value,
+      amount: amt, items, upi_id: '7036547953-2@ybl'
+    });
+    if (res.success) {
+      toast('Bill saved! ID: ' + res.id);
+      const box = document.getElementById('billPayBox');
+      box.style.display = 'block';
+      const upiId = '7036547953-2@ybl';
+      document.getElementById('gpayLink').href    = `https://pay.google.com/gp/p/send?upi_id=${upiId}&am=${amt}&tn=Bill+${res.id}`;
+      document.getElementById('phonepeLink').href = `phonepe://pay?pa=${upiId}&pn=MAPSIVE&am=${amt}&tn=Bill+${res.id}`;
+      document.getElementById('upiLink').href     = `upi://pay?pa=${upiId}&pn=MAPSIVE&am=${amt}&tn=Bill+${res.id}`;
+      loadBills();
+    } else { toast(res.message,'error'); }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function loadBills() {
+  const name = document.getElementById('billSearchName').value.trim();
+  const list = document.getElementById('billsList');
+  const params = name ? '?patient_name=' + encodeURIComponent(name) : '';
+  try {
+    const res = await api('GET', '/api/bills' + params);
+    if (!res.data?.length) { list.innerHTML = '<p style="color:var(--text2)">No bills found.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Patient</th><th>Phone</th><th>Hospital</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+      ${res.data.map(b => `<tr>
+        <td>${b.patient_name}</td><td>${b.patient_phone||'—'}</td><td>${b.hospital||'—'}</td>
+        <td>₹${parseFloat(b.amount).toFixed(2)}</td>
+        <td><span class="badge ${b.payment_status==='paid'?'badge-green':'badge-yellow'}">${b.payment_status}</span></td>
+        <td>${new Date(b.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Server error</div>'; }
+}
+
+function prefillAppt(hospitalName) {
+  showSection('appointments');
+  setTimeout(() => {
+    const sel = document.getElementById('apptHosp');
+    for (let o of sel.options) { if (o.value === hospitalName) { sel.value = hospitalName; break; } }
+  }, 400);
+}
+
+// ── ADMIN ──────────────────────────────────────────────────
+async function adminLogin() {
+  const user = document.getElementById('adminUser').value.trim();
+  const pass = document.getElementById('adminPass').value;
+  if (!user || !pass) { toast('Enter credentials','error'); return; }
+  try {
+    const res = await api('POST', '/api/admin/login', { username: user, password: pass });
+    if (res.success) {
+      document.getElementById('adminLoginView').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      toast('Admin logged in!');
+      loadAdminStats();
+      loadAdminDoctors();
+    } else {
+      document.getElementById('adminLoginErr').innerHTML = `<div class="alert alert-error">${res.message}</div>`;
+    }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function adminLogout() {
+  await api('POST', '/api/admin/logout');
+  document.getElementById('adminDashboard').style.display = 'none';
+  document.getElementById('adminLoginView').style.display = 'block';
+  toast('Logged out');
+}
+
+async function loadAdminStats() {
+  try {
+    const res = await api('GET', '/api/admin/stats');
+    if (!res.success) return;
+    const s = res.stats;
+    document.getElementById('adminStats').innerHTML = `
+      <div class="stat-card"><div class="s-num">${s.hospitals}</div><div class="s-lbl">Hospitals</div></div>
+      <div class="stat-card"><div class="s-num">${s.doctors_total}</div><div class="s-lbl">Total Doctors</div></div>
+      <div class="stat-card"><div class="s-num">${s.doctors_active}</div><div class="s-lbl">Active Doctors</div></div>
+      <div class="stat-card"><div class="s-num">${s.doctors_suspended}</div><div class="s-lbl">Suspended</div></div>
+      <div class="stat-card"><div class="s-num">${s.appointments}</div><div class="s-lbl">Appointments</div></div>
+      <div class="stat-card"><div class="s-num">${s.bills}</div><div class="s-lbl">Bills</div></div>`;
+  } catch(e) {}
+}
+
+async function loadAdminDoctors() {
+  const list = document.getElementById('adminDoctorsList');
+  try {
+    const res = await api('GET', '/api/admin/doctors');
+    if (!res.data?.length) { list.innerHTML = '<p>No doctors.</p>'; return; }
+    list.innerHTML = `<table><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Hospital</th><th>Login Code</th><th>Status</th><th>Action</th></tr>
+      ${res.data.map(d => `<tr>
+        <td>${d.doctor_id}</td><td>${d.name}</td><td>${d.specialization}</td><td>${d.hospital||'—'}</td>
+        <td><code>${d.login_code}</code></td>
+        <td><span class="badge ${d.status==='active'?'badge-green':'badge-red'}">${d.status}</span></td>
+        <td>
+          ${d.status==='active'
+            ?`<button class="btn btn-sm btn-danger" onclick="toggleDocStatus('${d.doctor_id}','suspended')">Suspend</button>`
+            :`<button class="btn btn-sm btn-teal" onclick="toggleDocStatus('${d.doctor_id}','active')">Activate</button>`}
+        </td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Error loading doctors</div>'; }
+}
+
+async function toggleDocStatus(id, status) {
+  await api('PUT', `/api/admin/doctors/${id}/status`, { status });
+  toast(`Doctor ${status}`);
+  loadAdminDoctors(); loadAdminStats();
+}
+
+async function loadAdminPatients() {
+  const list = document.getElementById('adminPatientsList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i></div>';
+  try {
+    const res = await api('GET', '/api/admin/patients');
+    if (!res.data?.length) { list.innerHTML = '<p>No patients yet.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Name</th><th>Phone</th><th>Hospital</th><th>Visits</th></tr>
+      ${res.data.map(p => `<tr>
+        <td>${p.patient_name}</td><td>${p.patient_phone||'—'}</td>
+        <td>${p.hospital||'—'}</td><td>${p.visits}</td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Error</div>'; }
+}
+
+async function loadAdminAppointments() {
+  const list = document.getElementById('adminApptList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i></div>';
+  try {
+    const res = await api('GET', '/api/admin/appointments');
+    if (!res.data?.length) { list.innerHTML = '<p>No appointments.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Patient</th><th>Phone</th><th>Hospital</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr>
+      ${res.data.map(a => `<tr>
+        <td>${a.patient_name}</td><td>${a.patient_phone||'—'}</td>
+        <td>${a.hospital||'—'}</td><td>${a.doctor_name||'—'}</td>
+        <td>${new Date(a.appointment_date).toLocaleDateString('en-IN')}</td><td>${a.appointment_time}</td>
+        <td><span class="badge ${a.status==='completed'?'badge-green':a.status==='cancelled'?'badge-red':'badge-yellow'}">${a.status}</span></td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Error</div>'; }
+}
+
+async function loadAdminBills() {
+  const list = document.getElementById('adminBillsList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i></div>';
+  try {
+    const res = await api('GET', '/api/admin/bills');
+    if (!res.data?.length) { list.innerHTML = '<p>No bills.</p>'; return; }
+    list.innerHTML = `<table><tr><th>Patient</th><th>Phone</th><th>Hospital</th><th>Doctor</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+      ${res.data.map(b => `<tr>
+        <td>${b.patient_name}</td><td>${b.patient_phone||'—'}</td>
+        <td>${b.hospital||'—'}</td><td>${b.doctor_name||'—'}</td>
+        <td>₹${parseFloat(b.amount).toFixed(2)}</td>
+        <td><span class="badge ${b.payment_status==='paid'?'badge-green':'badge-yellow'}">${b.payment_status}</span></td>
+        <td>${new Date(b.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Error</div>'; }
+}
+
+async function loadAdminHospitals() {
+  const list = document.getElementById('adminHospitalsList');
+  list.innerHTML = '<div class="loading-msg"><i class="fas fa-spinner"></i></div>';
+  try {
+    const res = await api('GET', '/api/admin/hospitals');
+    if (!res.data?.length) { list.innerHTML = '<p>No hospitals.</p>'; return; }
+    list.innerHTML = `<table><tr><th>ID</th><th>Name</th><th>Location</th><th>Speciality</th><th>Phone</th><th>Status</th><th>Action</th></tr>
+      ${res.data.map(h => `<tr>
+        <td>${h.id}</td><td>${h.name}</td><td>${h.location}</td><td>${h.speciality}</td>
+        <td>${h.phone||'—'}</td>
+        <td><span class="badge ${h.status==='active'?'badge-green':'badge-red'}">${h.status}</span></td>
+        <td>${h.status==='active'?`<button class="btn btn-sm btn-danger" onclick="removeHospital(${h.id})">Remove</button>`:'—'}</td>
+      </tr>`).join('')}</table>`;
+  } catch(e) { list.innerHTML = '<div class="alert alert-error">Error</div>'; }
+}
+
+async function removeHospital(id) {
+  await api('DELETE', `/api/hospitals/${id}`);
+  toast('Hospital removed'); loadAdminHospitals(); loadAdminStats();
+}
+
+async function adminAddDoctor() {
+  const name  = document.getElementById('adDName').value.trim();
+  const email = document.getElementById('adDEmail').value.trim();
+  const spec  = document.getElementById('adDSpec').value;
+  if (!name || !email || !spec) { toast('Name, email, specialization required','error'); return; }
+
+  const fd = new FormData();
+  fd.append('name', name); fd.append('email', email);
+  fd.append('specialization', spec);
+  fd.append('phone',    document.getElementById('adDPhone').value);
+  fd.append('hospital', document.getElementById('adDHosp').value);
+  fd.append('location', document.getElementById('adDLoc').value);
+  fd.append('license',  document.getElementById('adDLicense').value);
+  const ph = document.getElementById('adDPhoto').files[0];
+  const ld = document.getElementById('adDLicDoc').files[0];
+  if (ph) fd.append('photo', ph);
+  if (ld) fd.append('license_doc', ld);
+
+  try {
+    const res = await api('POST', '/api/admin/doctors', fd, true);
+    const box = document.getElementById('adDoctorResult');
+    if (res.success) {
+      box.innerHTML = `<div class="alert alert-success">${res.message}
+        ${res.doctor_id ? ` | ID: <strong>${res.doctor_id}</strong> | Code: <strong>${res.login_code}</strong>` : ''}</div>`;
+      toast(res.message); loadAdminDoctors(); loadAdminStats();
+    } else { box.innerHTML = `<div class="alert alert-error">${res.message}</div>`; }
+  } catch(e) { toast('Server error','error'); }
+}
+
+async function adminAddHospital() {
+  const name = document.getElementById('adHName').value.trim();
+  const loc  = document.getElementById('adHLoc').value;
+  const spec = document.getElementById('adHSpec').value;
+  if (!name || !loc || !spec) { toast('Name, location, speciality required','error'); return; }
+
+  const fd = new FormData();
+  fd.append('name', name); fd.append('location', loc); fd.append('speciality', spec);
+  fd.append('address', document.getElementById('adHAddr').value);
+  fd.append('phone',   document.getElementById('adHPhone').value);
+  fd.append('email',   document.getElementById('adHEmail').value);
+  const ph = document.getElementById('adHPhoto').files[0];
+  const lc = document.getElementById('adHLicense').files[0];
+  if (ph) fd.append('photo', ph);
+  if (lc) fd.append('license', lc);
+
+  try {
+    const res = await api('POST', '/api/hospitals', fd, true);
+    const box = document.getElementById('adHospResult');
+    if (res.success) {
+      box.innerHTML = `<div class="alert alert-success">${res.message} (ID: ${res.id})</div>`;
+      toast('Hospital registered!'); loadAdminHospitals(); loadAdminStats();
+    } else { box.innerHTML = `<div class="alert alert-error">${res.message}</div>`; }
+  } catch(e) { toast('Server error','error'); }
+}
+
+// ── Init ───────────────────────────────────────────────────
+loadHomeStats();
+</script>
+</body>
+</html>
